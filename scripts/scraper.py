@@ -59,9 +59,9 @@ def create_certification_folders(vendor, certifications, repo):
         write_json_file(file_path, {certification: ceus}, repo)
 
 def main():
-    github_token = os.environ['GITHUB_TOKEN']
+    github_token = os.environ['TOKEN']
     g = Github(github_token)
-    repo = g.get_repo(os.environ['GITHUB_REPOSITORY'])
+    repo = "it-certifications"
 
     for url, vendor in urls.items():
         data = scrape_comptia(url)
