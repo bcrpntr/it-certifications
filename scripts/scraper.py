@@ -34,18 +34,28 @@ def scrape_comptia(url):
     return data
 
 def create_directory(directory, repo):
-    try:
-        repo.get_contents(directory)
-    except Exception:
+    if not directory_exists(directory, repo):
         repo.create_file(f"{directory}/.gitkeep", "Create directory", "")
 
 def write_json_file(file_path, data, repo):
     file_name = os.path.basename(file_path)
     directory = os.path.dirname(file_path)
+    if not file_exists(file_path, repo):
+        repo.create_file(f"{directory}/{file_name}", f"Create file {file_name}", json.dumps(data))
+
+def directory_exists(directory, repo):
+    try:
+        repo.get_contents(directory)
+        return True
+    except Exception:
+        return False
+
+def file_exists(file_path, repo):
     try:
         repo.get_contents(file_path)
+        return True
     except Exception:
-        repo.create_file(f"{directory}/{file_name}", f"Create file {file_name}", json.dumps(data))
+        return False
 
 def create_certification_folders(vendor, certifications, repo):
     vendor_dir = os.path.join("/", "it-certifications", vendor)
