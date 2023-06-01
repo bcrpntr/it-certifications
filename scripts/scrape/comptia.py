@@ -46,15 +46,16 @@ def scrape_comptia(url):
                 for certification in certifications:
                     certification = certification.strip()  # Remove leading and trailing whitespace
 
-                    if required_certification != "N/A":
-                        data[certification] = {
-                            "Required Certification": required_certification,
-                            "CEUs Granted": ceus_granted
-                        }
-                    else:
-                        data[certification] = {
-                            "CEUs Granted": ceus_granted
-                        }
+                    if ceus_granted != "N/A":  # Only create entry if CEUs Granted is not "N/A"
+                        if required_certification != "N/A":
+                            data[certification] = {
+                                "Required Certification": required_certification,
+                                "CEUs Granted": ceus_granted
+                            }
+                        else:
+                            data[certification] = {
+                                "CEUs Granted": ceus_granted
+                            }
     return data
 
 def write_json_file(file_path, data, repo):
