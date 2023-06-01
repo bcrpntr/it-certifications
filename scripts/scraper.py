@@ -2,6 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
+from github import Github
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
@@ -32,29 +33,39 @@ def scrape_comptia(url):
 
     return data
 
-def create_directory(directory):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+def create_directory(directory, repo):
+    try:
+        repo.get_contents(directory)
+    except Exception:
+        repo.create_file(f"{directory}/placeholder.txt", "Create directory", "")
 
-def write_json_file(file_path, data):
-    with open(file_path, 'w') as f:
-        json.dump(data, f)
+def write_json_file(file_path, data, repo):
+    file_name = os.path.basename(file_path)
+    directory = os.path.dirname(file_path)
+    try:
+        repo.get_contents(file_path)
+    except Exception:
+        repo.create_file(f"{directory}/{file_name}", f"Create file {file_name}", json.dumps(data))
 
-def create_certification_folders(vendor, certifications):
+def create_certification_folders(vendor, certifications, repo):
     vendor_dir = os.path.join(os.getcwd(), vendor)
-    create_directory(vendor_dir)
+    create_directory(vendor_dir, repo)
 
     for certification, ceus in certifications.items():
         certification_dir = os.path.join(vendor_dir, certification)
-        create_directory(certification_dir)
+        create_directory(certification_dir, repo)
 
         file_path = os.path.join(certification_dir, 'data.json')
-        write_json_file(file_path, {certification: ceus})
+        write_json_file(file_path, {certification: ceus}, repo)
 
 def main():
+    github_token = "YOUR_GITHUB_ACCESS_TOKEN"
+    g = Github(github_token)
+    repo = g.get_repo("your-username/your-repository")
+
     for url, vendor in urls.items():
         data = scrape_comptia(url)
-        create_certification_folders(vendor, data)
+        create_certification_folders(vendor, data, repo)
 
 if __name__ == '__main__':
     main()
