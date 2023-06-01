@@ -61,7 +61,7 @@ def create_certification_folders(vendor, certifications, repo):
         write_json_file(file_path, {certification: ceus}, repo)
 
 def main():
-    github_token = {{ secrets.TOKEN }}
+    github_token = os.getenviron('TOKEN')
     g = Github(github_token)
     repo = g.get_repo("bcrpntr/it-certifications")
 
