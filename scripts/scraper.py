@@ -2,8 +2,7 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
-from github import Github, InputFileContent
-import sys
+from github import Github
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
@@ -38,7 +37,7 @@ def create_directory(directory, repo):
     try:
         repo.get_contents(directory)
     except Exception:
-        repo.create_file(f"{directory}/placeholder.txt", "Create directory", "")
+        repo.create_file(f"{directory}/.gitkeep", "Create directory", "")
 
 def write_json_file(file_path, data, repo):
     file_name = os.path.basename(file_path)
