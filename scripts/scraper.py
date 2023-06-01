@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 import json
 from github import Github, InputFileContent
 import sys
-import secrets
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
