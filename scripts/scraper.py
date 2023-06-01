@@ -2,25 +2,21 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
-from github import Github, InputFileContent
+from github import Github
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
 }
 
 def scrape_comptia(url):
-    # Send a request to the website
     r = requests.get(url)
     r.raise_for_status()
 
-    # Parse the HTML content
     soup = BeautifulSoup(r.content, 'html.parser')
 
-    # Find the relevant elements based on the HTML structure
     accordion = soup.find(id='accordion3')
     items = accordion.find_all(class_='accordion-item')
 
-    # Extract the certifications and CEUs granted
     data = {}
     for item in items:
         certification_element = item.find(class_='title')
@@ -58,7 +54,7 @@ def file_exists(file_path, repo):
         return False
 
 def create_certification_folders(vendor, certifications, repo):
-    vendor_dir = os.path.join("/", "it-certifications", vendor)
+    vendor_dir = os.path.join("it-certifications", vendor)
     create_directory(vendor_dir, repo)
 
     for certification, ceus in certifications.items():
