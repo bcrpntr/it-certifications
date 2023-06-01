@@ -12,9 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          TOKEN: ${{ secrets.TOKEN }}
-          submodules: recursive
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -26,3 +23,5 @@ jobs:
 
       - name: Run the scraping script
         run: python scripts/scraper.py
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
