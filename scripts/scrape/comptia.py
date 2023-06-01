@@ -9,6 +9,8 @@ urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
 }
 
+import re  # Add this import at the top of your script
+
 def scrape_comptia(url):
     r = requests.get(url)
     r.raise_for_status()
@@ -34,11 +36,11 @@ def scrape_comptia(url):
                     required_certification = "N/A"
                     ceus_granted = ceus_content
                 
-                # Extract only the numeric part of ceus_granted
-                ceus_granted = re.search(r'\d+', ceus_granted)
-                ceus_granted = ceus_granted.group() if ceus_granted else 'N/A'
+                # Extract only the numeric part of ceus_granted if "CEUs" present in the string
+                ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_granted, re.IGNORECASE)
+                ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
                 
-                if required_certification == 'N/A' and ceus_granted == 'N/A' or ceus_granted == '' or ceus_granted == "":
+                if required_certification == 'N/A' and ceus_granted == 'N/A':
                     continue
 
                 data[certification] = {
