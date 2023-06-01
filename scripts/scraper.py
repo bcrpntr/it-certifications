@@ -55,10 +55,10 @@ for url, (vendor, certification) in urls.items():
         data[url] = scraping_function(url)
         for cert, ceus in data[url].items():
             certification_dir = create_directory(vendor, cert)
-            file_path = os.path.join(certification_dir, 'data.json')
+            file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], certification_dir, 'data.json')
             with open(file_path, 'w') as f:
                 json.dump({cert: ceus}, f)
 
 # Write to a json file
-with open('data.json', 'w') as f:
+with open(os.path.join(os.environ['GITHUB_WORKSPACE'], 'data.json'), 'w') as f:
     json.dump(data, f)
