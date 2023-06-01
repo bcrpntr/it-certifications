@@ -3,7 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from github import Github, InputFileContent
-from github_secrets import get_secret
+import sys
+import secrets
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
@@ -60,7 +61,7 @@ def create_certification_folders(vendor, certifications, repo):
         write_json_file(file_path, {certification: ceus}, repo)
 
 def main():
-    github_token = get_secret('TOKEN')
+    github_token = secrets.get("TOKEN")
     g = Github(github_token)
     repo = g.get_repo("bcrpntr/it-certifications")
 
