@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import json
 
 urls = {
-    'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': ('comptia', 'additional-comptia-certifications')
+    'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'comptia'
 }
 
 def scrape_comptia(url):
@@ -49,16 +49,16 @@ scraping_functions = {
 }
 
 data = {}
-for url, (vendor, certification) in urls.items():
+for url, vendor in urls.items():
     scraping_function = scraping_functions.get(vendor)
     if scraping_function:
         data[url] = scraping_function(url)
         for cert, ceus in data[url].items():
-            certification_dir = create_directory(vendor, cert)
-            file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], certification_dir, 'data.json')
+            vendor_dir = create_directory(vendor, cert)
+            file_path = os.path.join(vendor_dir, 'data.json')
             with open(file_path, 'w') as f:
                 json.dump({cert: ceus}, f)
 
 # Write to a json file
-with open(os.path.join(os.environ['GITHUB_WORKSPACE'], 'data.json'), 'w') as f:
+with open('data.json', 'w') as f:
     json.dump(data, f)
