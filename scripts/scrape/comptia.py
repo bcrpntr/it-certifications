@@ -25,18 +25,21 @@ def scrape_comptia(url):
         if certification_element and ceus_element:
             certification = certification_element.get_text(strip=True)
             ceus_content = ceus_element.next_sibling.strip() if ceus_element.next_sibling else 'N/A'
+            
             if ceus_content != 'N/A':
                 if ' ' in ceus_content:
                     required_certification, ceus_granted = ceus_content.split(' ', 1)
-                    data[certification] = {
-                        "Required Certification": required_certification,
-                        "CEUs Granted": ceus_granted
-                    }
                 else:
-                    data[certification] = {
-                        "Required Certification": "N/A",
-                        "CEUs Granted": ceus_content
-                    }
+                    required_certification = "N/A"
+                    ceus_granted = ceus_content
+                
+                if required_certification == 'N/A' and ceus_granted == '' or ceus_granted == "":
+                    continue
+
+                data[certification] = {
+                    "Required Certification": required_certification,
+                    "CEUs Granted": ceus_granted
+                }
 
     return data
 
