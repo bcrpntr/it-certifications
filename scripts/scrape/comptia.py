@@ -40,7 +40,7 @@ def scrape_comptia(url):
                 ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_granted, re.IGNORECASE)
                 ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
                 
-                if required_certification == 'N/A' and ceus_granted == 'N/A':
+                if required_certification == 'N/A' and ceus_granted == 'N/A' or ceus_granted == '' or ceus_granted == "" or ceus_granted == '0' or ceus_granted == "0":
                     continue
 
                 data[certification] = {
