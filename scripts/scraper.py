@@ -39,11 +39,10 @@ def write_json_file(file_path, data, repo):
 
 def create_certification_folders(vendor, certifications, repo):
     for certification, ceus in certifications.items():
-        if ceus == 'N/A':
+        if ceus == 'N/A' or ceus == '' or ceus == "":
             continue
         file_path = os.path.join(vendor, certification, 'data.json')
         write_json_file(file_path, {certification: ceus}, repo)
-
 def main():
     github_token = os.getenv('TOKEN')
     g = Github(github_token)
