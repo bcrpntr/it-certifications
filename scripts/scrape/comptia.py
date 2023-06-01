@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from github import Github
+import re
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
@@ -33,7 +34,11 @@ def scrape_comptia(url):
                     required_certification = "N/A"
                     ceus_granted = ceus_content
                 
-                if required_certification == 'N/A' and ceus_granted == '' or ceus_granted == "":
+                # Extract only the numeric part of ceus_granted
+                ceus_granted = re.search(r'\d+', ceus_granted)
+                ceus_granted = ceus_granted.group() if ceus_granted else 'N/A'
+                
+                if required_certification == 'N/A' and ceus_granted == 'N/A' or ceus_granted == '' or ceus_granted == "":
                     continue
 
                 data[certification] = {
