@@ -27,10 +27,7 @@ def scrape_comptia(url):
 
         if certification_element:
             certification = certification_element.get_text(strip=True)
-            try:
-                ceus_granted = ceus_element.next_sibling.strip()
-            except AttributeError:
-                ceus_granted = 'N/A'  # Set a default value if CEUs element is not found
+            ceus_granted = ceus_element.find_next_sibling().strip() if ceus_element else 'N/A'
             data[certification] = ceus_granted
 
     return data
