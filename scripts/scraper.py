@@ -2,7 +2,8 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
-from github import Github
+from github import Github, InputFileContent
+import sys
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
