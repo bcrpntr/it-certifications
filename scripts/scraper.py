@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 from github import Github
+from github import InputFileContent
 
 urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
@@ -45,7 +46,8 @@ def write_json_file(file_path, data, repo):
     try:
         repo.get_contents(file_path)
     except Exception:
-        repo.create_file(f"{directory}/{file_name}", f"Create file {file_name}", json.dumps(data))
+        file_content = json.dumps(data, indent=4)
+        repo.create_file(file_path, f"Create file {file_name}", file_content, branch="main")
 
 def create_certification_folders(vendor, certifications, repo):
     vendor_dir = os.path.join(os.getcwd(), vendor)
@@ -61,7 +63,8 @@ def create_certification_folders(vendor, certifications, repo):
 def main():
     github_token = os.environ['TOKEN']
     g = Github(github_token)
-    repo = g.get_repo("bcrpntr/it-certifications")
+    repo_name = "bcrpntr/it-certifications"
+    repo = g.get_repo(repo_name)
 
     for url, vendor in urls.items():
         data = scrape_comptia(url)
