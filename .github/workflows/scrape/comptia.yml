@@ -1,4 +1,4 @@
-name: Scrape Websites
+name: Scrape CompTIA
 
 on:
   schedule:
@@ -22,6 +22,6 @@ jobs:
         run: pip install requests beautifulsoup4 PyGithub
 
       - name: Run the scraping script
-        run: python scripts/scraper.py
+        run: python scripts/scrape/comptia.py
         env:
           TOKEN: ${{ secrets.TOKEN }}
