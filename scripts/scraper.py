@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import json
 
 urls = {
-    'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'comptia'
+    'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
 }
 
 def scrape_comptia(url):
@@ -32,33 +32,29 @@ def scrape_comptia(url):
 
     return data
 
-def create_directory(vendor, certification):
-    # Create a directory for the vendor if it doesn't exist
-    if not os.path.exists(vendor):
-        os.makedirs(vendor)
+def create_directory(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
-    # Create a directory for the certification if it doesn't exist
-    certification_dir = os.path.join(vendor, certification)
-    if not os.path.exists(certification_dir):
-        os.makedirs(certification_dir)
+def write_json_file(file_path, data):
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
 
-    return certification_dir
+def create_certification_folders(vendor, certifications):
+    vendor_dir = os.path.join(os.getcwd(), vendor)
+    create_directory(vendor_dir)
 
-scraping_functions = {
-    'comptia': scrape_comptia
-}
+    for certification, ceus in certifications.items():
+        certification_dir = os.path.join(vendor_dir, certification)
+        create_directory(certification_dir)
 
-data = {}
-for url, vendor in urls.items():
-    scraping_function = scraping_functions.get(vendor)
-    if scraping_function:
-        data[url] = scraping_function(url)
-        for cert, ceus in data[url].items():
-            vendor_dir = create_directory(vendor, cert)
-            file_path = os.path.join(vendor_dir, 'data.json')
-            with open(file_path, 'w') as f:
-                json.dump({cert: ceus}, f)
+        file_path = os.path.join(certification_dir, 'data.json')
+        write_json_file(file_path, {certification: ceus})
 
-# Write to a json file
-with open('data.json', 'w') as f:
-    json.dump(data, f)
+def main():
+    for url, vendor in urls.items():
+        data = scrape_comptia(url)
+        create_certification_folders(vendor, data)
+
+if __name__ == '__main__':
+    main()
