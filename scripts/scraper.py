@@ -61,7 +61,7 @@ def create_certification_folders(vendor, certifications, repo):
 def main():
     github_token = os.environ['TOKEN']
     g = Github(github_token)
-    repo = "it-certifications"
+    repo = g.get_repo("bcrpntr/it-certifications")
 
     for url, vendor in urls.items():
         data = scrape_comptia(url)
