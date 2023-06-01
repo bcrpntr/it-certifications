@@ -29,17 +29,10 @@ def scrape_comptia(url):
             certifications = certification_element.get_text(strip=True).split(',')
             ceus_content = ceus_element.next_sibling.strip() if ceus_element.next_sibling else 'N/A'
 
-            required_certification = "N/A"
-            ceus_granted = "N/A"
+            ceus_granted = 'N/A'
 
-            ceus_content_parts = ceus_content.split(' ')
-            if len(ceus_content_parts) > 1:
-                required_certification, ceus_granted = ceus_content_parts[0], ceus_content_parts[-1]
-            else:
-                ceus_granted = ceus_content_parts[0]
-
-            # Extract only the numeric part of ceus_granted if "CEUs" present in the string
-            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_granted, re.IGNORECASE)
+            # Extract only the numeric part of ceus_content if "CEUs" present in the string
+            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_content, re.IGNORECASE)
             ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
 
             for certification in certifications:
