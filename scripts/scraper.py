@@ -22,9 +22,13 @@ def scrape_comptia(url):
     # Extract the certifications and CEUs granted
     data = {}
     for item in items:
-        certification = item.find(class_='title').get_text(strip=True)
-        ceus_granted = item.find('strong').next_sibling.strip()
-        data[certification] = ceus_granted
+        certification_element = item.find(class_='title')
+        ceus_element = item.find('strong')
+
+        if certification_element and ceus_element:
+            certification = certification_element.get_text(strip=True)
+            ceus_granted = ceus_element.next_sibling.strip()
+            data[certification] = ceus_granted
 
     return data
 
