@@ -27,7 +27,7 @@ def scrape_comptia(url):
 
         if certification_element:
             certification = certification_element.get_text(strip=True)
-            ceus_granted = ceus_element.find_next_sibling().strip() if ceus_element else 'N/A'
+            ceus_granted = ceus_element.find_next_sibling('p').text.strip() if ceus_element else 'N/A'
             data[certification] = ceus_granted
 
     return data
