@@ -29,33 +29,27 @@ def scrape_comptia(url):
             certifications = certification_element.get_text(strip=True).split(',')
             ceus_content = ceus_element.next_sibling.strip() if ceus_element.next_sibling else 'N/A'
 
-            if ceus_content != 'N/A':
-                required_certification = "N/A"
-                ceus_granted = "N/A"
+            required_certification = "N/A"
+            ceus_granted = "N/A"
 
-                ceus_content_parts = ceus_content.split(' ')
-                if len(ceus_content_parts) > 1:
-                    required_certification, ceus_granted = ceus_content_parts[0], ceus_content_parts[-1]
-                else:
-                    ceus_granted = ceus_content_parts[0]
+            ceus_content_parts = ceus_content.split(' ')
+            if len(ceus_content_parts) > 1:
+                required_certification, ceus_granted = ceus_content_parts[0], ceus_content_parts[-1]
+            else:
+                ceus_granted = ceus_content_parts[0]
 
-                # Extract only the numeric part of ceus_granted if "CEUs" present in the string
-                ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_granted, re.IGNORECASE)
-                ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
+            # Extract only the numeric part of ceus_granted if "CEUs" present in the string
+            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_granted, re.IGNORECASE)
+            ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
 
-                for certification in certifications:
-                    certification = certification.strip()  # Remove leading and trailing whitespace
+            for certification in certifications:
+                certification = certification.strip()  # Remove leading and trailing whitespace
 
-                    if ceus_granted != "N/A":  # Only create entry if CEUs Granted is not "N/A"
-                        if required_certification != "N/A":
-                            data[certification] = {
-                                "Required Certification": required_certification,
-                                "CEUs Granted": ceus_granted
-                            }
-                        else:
-                            data[certification] = {
-                                "CEUs Granted": ceus_granted
-                            }
+                # Ensure ceus_granted is not 'N/A' or an empty string, and is a digit
+                if ceus_granted not in {'N/A', ''} and ceus_granted.isdigit():
+                    data[certification] = {
+                        "CEUs Granted": ceus_granted
+                    }
     return data
 
 def write_json_file(file_path, data, repo):
