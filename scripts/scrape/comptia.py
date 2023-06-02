@@ -45,6 +45,7 @@ def scrape_comptia(url):
                         "Required Certification": required_certification,
                         "CEUs Granted": ceus_granted
                     }
+        print(f"CERTIFICATION DATA: {data}")  # Print debug info here
     return data
 
 def write_json_file(file_path, data, repo):
