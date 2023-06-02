@@ -21,19 +21,15 @@ def scrape_comptia(url):
     data = {}
     for item in items:
         certification_element = item.find(class_='title')
-        ceus_element = item.find('strong')
+        required_certification_element = item.find_all('strong')
 
-        if certification_element and ceus_element:
+        if certification_element and required_certification_element and len(required_certification_element) >= 2:
             certifications = certification_element.get_text(strip=True).split(',')
-            ceus_content = ceus_element.get_text(strip=True)
-
-            # Splitting on '–' since this is the character between required certification and CEUs granted
-            content_parts = ceus_content.split('–', 1)
-
-            required_certification = content_parts[0].strip() if len(content_parts) > 1 else "N/A"
+            required_certification = required_certification_element[0].get_text(strip=True)
+            ceus_content = required_certification_element[1].get_text(strip=True)
 
             # Extract only the numeric part of ceus_content if "CEUs" present in the string
-            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', content_parts[-1], re.IGNORECASE)
+            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_content, re.IGNORECASE)
             ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
 
             for certification in certifications:
@@ -56,9 +52,11 @@ def write_json_file(file_path, data, repo):
         repo.create_file(f"{directory}/{file_name}", f"Create file {file_name}", json.dumps(data, indent=4))
 
 def create_certification_folders(vendor, certifications, repo):
-    for certification, ceus in certifications.items():
+    for certification, certification_data in certifications.items():
+        if certification_data["CEUs Granted"] == 'N/A' or certification_data["CEUs Granted"] == '':
+            continue
         file_path = os.path.join(vendor, certification, 'data.json')
-        write_json_file(file_path, {certification: ceus}, repo)
+        write_json_file(file_path, {certification: certification_data}, repo)
 
 def main():
     github_token = os.getenv('TOKEN')
