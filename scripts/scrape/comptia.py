@@ -9,8 +9,6 @@ urls = {
     'https://www.comptia.org/continuing-education/choose/renewing-with-multiple-activities/additional-comptia-certifications': 'CompTIA'
 }
 
-import re  # Add this import at the top of your script
-
 def scrape_comptia(url):
     r = requests.get(url)
     r.raise_for_status()
@@ -61,8 +59,6 @@ def write_json_file(file_path, data, repo):
 
 def create_certification_folders(vendor, certifications, repo):
     for certification, ceus in certifications.items():
-        if ceus == 'N/A' or ceus == '':
-            continue
         file_path = os.path.join(vendor, certification, 'data.json')
         write_json_file(file_path, {certification: ceus}, repo)
 
