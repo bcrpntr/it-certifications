@@ -23,17 +23,19 @@ def scrape_comptia(url):
     data = {}
     for item in items:
         certification_element = item.find(class_='title')
-        ceus_elements = item.find_all('strong')
+        ceus_element = item.find('strong')
 
-        if certification_element and ceus_elements and len(ceus_elements) >= 2:
+        if certification_element and ceus_element:
             certifications = certification_element.get_text(strip=True).split(',')
+            ceus_content = ceus_element.next_sibling.strip() if ceus_element.next_sibling else 'N/A'
 
-            # The required certification and CEUs granted are both in strong tags
-            required_certification = ceus_elements[0].get_text(strip=True)
-            ceus_content = ceus_elements[1].get_text(strip=True)
+            # Splitting on '–' since this is the character between required certification and CEUs granted
+            content_parts = ceus_content.split('–', 1)
+
+            required_certification = content_parts[0].strip() if len(content_parts) > 1 else "N/A"
 
             # Extract only the numeric part of ceus_content if "CEUs" present in the string
-            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', ceus_content, re.IGNORECASE)
+            ceus_granted_search = re.search(r'(\d+)\s*CEUs?', content_parts[-1], re.IGNORECASE)
             ceus_granted = ceus_granted_search.group(1) if ceus_granted_search else 'N/A'
 
             for certification in certifications:
@@ -45,7 +47,6 @@ def scrape_comptia(url):
                         "Required Certification": required_certification,
                         "CEUs Granted": ceus_granted
                     }
-        print(f"CERTIFICATION DATA: {data}")  # Print debug info here
     return data
 
 def write_json_file(file_path, data, repo):
